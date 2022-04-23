@@ -1,18 +1,23 @@
 import scrapy
 
+attr_dict = {
+    'input': 'data-ing',
+    'input_count': 'data-ingn',
+    'output_quantity': 'data-out',
+    'process_name': 'data-recp',
+    'process_speed': 'data-time'
+}
+
 
 def recipe_to_dict(recipe):
     attrib = recipe.css('li').attrib
-    return {
-        'input': attrib['data-ing'],
-        'input_count': attrib['data-ingn'],
+    data = {'output': recipe.css('span.itemlink::text').get()}
 
-        'output': recipe.css('span.itemlink::text').get(),
-        'output_quantity': attrib['data-out'],
+    for key in attr_dict:
+        temp = {key: attrib[attr_dict[key]]}
+        data.update(temp)
 
-        'process_name': attrib['data-recp'],
-        'process_speed': attrib['data-time'],
-    }
+    return data
 
 
 def parse_recipes(response):
